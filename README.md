@@ -4,6 +4,8 @@
 
 零账号、数据全在本机、Windows 一等公民。MIT。
 
+**[下载打包版 v0.1.0](../../releases/download/v0.1.0/dayloom-v0.1.0-windows-x64.zip)** —— Windows x64 免安装，解压运行 `dayloom-gui.exe`；其他版本见 [Releases](../../releases/latest)。
+
 > **跟同类产品的区别。** [ActivityWatch](https://activitywatch.net) 记的是「你开了什么窗口」——应用名 + 窗口标题 + AFK 时长，不解画面内容。[Dayflow](https://github.com/JerryZLiu/Dayflow) 在 Mac 上用本地小模型做类似 dayloom 的事。dayloom 的选择是：只接**能看图的模型**，并且在提示词里强制它回答「在做什么事」，而不是复述应用名。所以时间线上写的是"改截图去重阈值，反复跑单测"，而不是"VS Code 3h12m"。
 
 ---
