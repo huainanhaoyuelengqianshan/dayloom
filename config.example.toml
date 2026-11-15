@@ -1,0 +1,90 @@
+# dayloom 配置示例。复制到 ~/dayloom/config.toml 后按需修改。
+# 所有字段都有默认值，这里写出来的只是"值得改的那些"。
+
+[general]
+# 数据目录。留空 = ~/dayloom（Windows 上是 C:\Users\<你>\dayloom）
+# 也可用环境变量 DAYLOOM_HOME 覆盖。
+data_dir = ""
+# 逻辑日从几点开始。夜猫子把它设成 4，凌晨 2 点的工作就算"昨天"。
+day_boundary_hour = 4
+
+[capture]
+enabled = true
+# 前台窗口/画面的探测间隔（秒）。这是"变化驱动"的心跳：每 2 秒看一次，
+# 变了就落帧，没变就不落。
+probe_interval = 2.0
+# 画面长时间不变时，也至少每隔这么久留一张证据帧（秒）。
+heartbeat = 20.0
+# 截什么：
+#   full_monitor  - 截前台窗口所在整块屏（默认；窗口小也不会截出一小块）
+#   active_window - 只截前台窗口本身（隐私最好，但窗口小的时候截图很小）
+#   all_monitors  - 截所有屏拼合（多屏并用时两边都看得到，但字更小、更费 token）
+mode = "full_monitor"
+# 落盘前把长边缩到多少像素。3072x1920 的屏不缩会又大又慢。
+max_edge = 1280
+webp_quality = 72
+# 相邻两帧的 dHash 汉明距离 <= 这个值就算"画面没变"。
+dedupe_distance = 3
+# 多久没键鼠输入就算空闲、停止截屏（秒）。
+idle_seconds = 300
+# 画面完全静止时，最多多久补一张帧（分钟）。0 = 不补。
+max_still_minutes = 10
+# 窗口标题命中这些正则就完全不截（也不存）。大小写不敏感由 (?i) 控制。
+blacklist_titles = [
+  "(?i)1password",
+  "(?i)bitwarden",
+  "(?i)keepass",
+  "(?i)lastpass",
+  "(?i)网上银行",
+  "(?i)网银",
+  "(?i)支付宝",
+  "(?i)微信支付",
+]
+# 进程名命中这些就跳过。
+blacklist_apps = ["keepass.exe", "1password.exe", "bitwarden.exe"]
+
+[storage]
+# 原始截图保留天数；活动记录和日报长期保留。
+keep_frames_days = 14
+
+[llm]
+# 只支持能看图的模型。base_url 写到 /v1 为止（OpenAI 兼容协议）。
+enabled = true
+base_url = "http://127.0.0.1:11434/v1"
+api_key = ""
+model = "qwen2.5vl:7b"
+timeout = 120.0
+# 每次请求最多送几帧。上下文小的本地模型把它降到 4~6。
+max_frames = 12
+temperature = 0.1
+# 每批额外送一张「任务栏徽标条」：把抽样帧底部的任务栏裁出来、放大、按帧顺序拼成一张图。
+# 多屏时模型靠它 + 每帧的前台应用判断"用户当前在哪个界面"。代价很小；上下文极紧时关掉。
+focus_strip = true
+
+# 质量闸门：主档结果低于这些阈值时，才把这批升级到 [[llm.tiers]] 里的下一档。
+# 三个判据都来自已经拿到的结果，判断本身不产生请求。
+[llm.quality]
+min_confidence = 0.45      # 平均置信度低于它 -> 升级
+max_unknown_ratio = 0.25   # "认不出来"的时间占比超过它 -> 升级
+max_shallow_ratio = 0.5    # 描述只是应用名/标题的段占比超过它 -> 升级
+
+# 升级档（可留空，按顺序尝试，达标就停）。主档失败时也会落到这里。
+# [[llm.tiers]]
+# name = "cloud"
+# base_url = "https://your-endpoint/v1"
+# api_key = "..."
+# model = "qwen3-vl-plus"
+# max_frames = 12
+
+[analysis]
+# 每批分析覆盖多少分钟。
+batch_minutes = 15
+# 窗口结束后等多久再分析（给迟到的帧留余量，秒）。
+grace_seconds = 120
+# 失败重试次数。
+max_attempts = 3
+# 相邻活动段间隔小于这个值、且应用与类别相同，则合并成一段会话（秒）。
+session_gap_seconds = 120
+# 每天最多送多少张图给模型（0 = 不限）。图片几乎占了全部 token，
+# 这是控制花费最直接的开关：用完就暂停分析，批次排队到明天。
+max_images_per_day = 0

@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dayloom"
+version = "0.1.0"
+description = "Local-first screen activity diary: capture, understand with a vision model, review your day as a timeline."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "dayloom contributors" }]
+keywords = ["screen", "timeline", "vlm", "local-first", "productivity", "privacy"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Office/Business",
+]
+dependencies = [
+    "mss>=9.0",
+    "pillow>=10.3",
+    "httpx>=0.27",
+    "pydantic>=2.6",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.5"]
+# LGPL binding, not PyQt (GPL) — this project is MIT.
+qt = ["PySide6>=6.6"]
+
+[project.scripts]
+dayloom = "dayloom.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+dayloom = ["py.typed", "assets/*.ico"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+exclude = [".venv", ".demo", "build", "dist"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
