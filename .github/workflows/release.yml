@@ -1,0 +1,55 @@
+name: Release to PyPI
+
+# Publishes dayloom to PyPI via Trusted Publishing (OIDC — no API token stored).
+# First-time setup: configure a "pending publisher" on pypi.org
+# (Account settings → Publishing) with:
+#   PyPI project name: dayloom
+#   Owner: huainanhaoyuelengqianshan   Repository: dayloom
+#   Workflow filename: release.yml     Environment: pypi
+#
+# Triggers: pushing a tag (v*) publishes that version; workflow_dispatch
+# publishes whatever pyproject.toml currently says (used for the first release).
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build sdist and wheel
+        run: |
+          python -m pip install --upgrade build
+          python -m build
+      - name: Sanity-check metadata
+        run: |
+          python -m pip install --upgrade twine
+          twine check dist/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      # Required for Trusted Publishing to PyPI.
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1

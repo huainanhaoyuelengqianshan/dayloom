@@ -11,6 +11,12 @@ requires-python = ">=3.11"
 license = { text = "MIT" }
 authors = [{ name = "dayloom contributors" }]
 keywords = ["screen", "timeline", "vlm", "local-first", "productivity", "privacy"]
+
+[project.urls]
+Homepage = "https://github.com/huainanhaoyuelengqianshan/dayloom"
+Repository = "https://github.com/huainanhaoyuelengqianshan/dayloom"
+Issues = "https://github.com/huainanhaoyuelengqianshan/dayloom/issues"
+Changelog = "https://github.com/huainanhaoyuelengqianshan/dayloom/releases"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Operating System :: Microsoft :: Windows",

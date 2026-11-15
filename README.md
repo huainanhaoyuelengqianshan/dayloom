@@ -1,5 +1,7 @@
 # dayloom
 
+**简体中文 | [English](README.en.md)**
+
 **本地优先的屏幕活动日记。** 定时截屏 → 视觉模型理解画面 → 一条「几点到几点在干嘛、每件事花了多久」的时间线。
 
 零账号、数据全在本机、Windows 一等公民。MIT。
@@ -512,6 +514,8 @@ max_images_per_day = 480    # 0 = 不限；用完就暂停分析，批次留到�
 ---
 
 ## English
+
+完整英文文档在 [**README.en.md**](README.en.md)（双语长期同步维护）。摘要：
 
 **dayloom** is a local-first screen activity diary for Windows. It samples the
 foreground window, stores a frame only when the picture actually changed,
